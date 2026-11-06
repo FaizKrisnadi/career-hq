@@ -1,0 +1,43 @@
+{
+  "banned": [
+    { "pattern": "it is important to note", "rule": "staged-importance" },
+    { "pattern": "it is worth noting", "rule": "staged-importance" },
+    { "pattern": "notably,", "rule": "staged-importance" },
+    { "pattern": "not merely", "rule": "not-x-but-y" },
+    { "pattern": "not just .{1,40}, but", "rule": "not-x-but-y", "regex": true },
+    { "pattern": "not only .{1,40}, but", "rule": "not-x-but-y", "regex": true },
+    { "pattern": "pivotal", "rule": "inflation" },
+    { "pattern": "transformative", "rule": "inflation" },
+    { "pattern": "groundbreaking", "rule": "inflation" },
+    { "pattern": "seamless", "rule": "inflation" },
+    { "pattern": "tapestry", "rule": "abstract-substitution" },
+    { "pattern": "\\brealm of\\b", "rule": "abstract-substitution", "regex": true },
+    { "pattern": "rich tapestry", "rule": "inflation" },
+    { "pattern": "vibrant", "rule": "inflation" },
+    { "pattern": "paves the way", "rule": "inflation" },
+    { "pattern": "experts (?:argue|say|agree)", "rule": "vague-authority", "regex": true },
+    { "pattern": "research (?:shows|suggests)\\b(?!\\s+that\\s+[^.]{0,80}\\b\\(?(?:[A-Z][a-z]+ et al|OECD|World Bank|ILO|IRENA|IEA))", "rule": "vague-authority", "regex": true },
+    { "pattern": "critics (?:say|argue|claim)", "rule": "vague-authority", "regex": true },
+    { "pattern": "stakeholders? (?:across|from) .{0,30}ecosystem", "rule": "abstract-substitution", "regex": true },
+    { "pattern": "serves as a testament", "rule": "inflation", "regex": true },
+    { "pattern": "stands as", "rule": "copula-avoidance" },
+    { "pattern": "in order to", "rule": "filler" },
+    { "pattern": "due to the fact that", "rule": "filler" },
+    { "pattern": "certainly,", "rule": "assistant-residue" },
+    { "pattern": "i hope this helps", "rule": "assistant-residue" },
+    { "pattern": "here is an overview", "rule": "assistant-residue" },
+    { "pattern": "delve into", "rule": "inflation" },
+    { "pattern": "in today'?s (?:rapidly )?(?:evolving|changing)", "rule": "canned-arc", "regex": true },
+    { "pattern": "at the forefront of", "rule": "inflation" },
+    { "pattern": "the harder test", "rule": "stock-verdict" },
+    { "pattern": "the real question is", "rule": "stock-verdict" },
+    { "pattern": "that distinction matters", "rule": "stock-verdict" }
+  ],
+  "cadence": {
+    "min_sentence_length_variance": 0.35,
+    "max_short_declarative_run": 4
+  },
+  "specificity": {
+    "min_concrete_tokens_per_100_words": 1.2
+  }
+}

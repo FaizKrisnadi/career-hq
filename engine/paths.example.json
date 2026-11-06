@@ -1,0 +1,17 @@
+{
+  "career_ops_data": "$HOME/Documents/Codex/2026-09-16/sh/career-ops-data",
+  "atlas_memory": "$HOME/Faiz-Atlas/memory",
+  "files": {
+    "cv": "$HOME/Documents/Codex/2026-09-16/sh/career-ops-data/cv.md",
+    "voice_dna": "$HOME/Documents/Codex/2026-09-16/sh/career-ops-data/voice-dna.md",
+    "cv_facts": "$HOME/Documents/Codex/2026-09-16/sh/career-ops-data/config/cv-facts.json",
+    "profile_yml": "$HOME/Documents/Codex/2026-09-16/sh/career-ops-data/config/profile.yml",
+    "portals_yml": "$HOME/Documents/Codex/2026-09-16/sh/career-ops-data/portals.yml",
+    "cv_bank": "$HOME/Faiz-Atlas/memory/cv-bank.md",
+    "opportunities_md": "$HOME/Faiz-Atlas/memory/opportunities.md",
+    "application_history_csv": "$HOME/Faiz-Atlas/memory/application-history.csv",
+    "contradictions_md": "$HOME/Faiz-Atlas/memory/contradictions.md",
+    "unresolved_md": "$HOME/Faiz-Atlas/memory/unresolved.md",
+    "referees_md": "$HOME/Faiz-Atlas/memory/referees.md"
+  }
+}

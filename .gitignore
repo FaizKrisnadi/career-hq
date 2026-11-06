@@ -1,0 +1,27 @@
+# --- secrets (never commit) ---
+engine/.engine-env
+engine/.engine-env-dev
+engine/.api-url
+engine/.paths.json
+app/.dev.vars
+app/.deploy-secrets.local
+.dev.vars
+.env*
+*.local
+
+# --- personal career data (never commit) ---
+adapters/extract/
+adapters/reconciliation-report.json
+adapters/commit-result.json
+engine/out/
+app/out/
+
+# --- local state ---
+node_modules/
+.cloudflare/
+.wrangler/
+.dist/
+.vinext/
+.zcode/
+next-env.d.ts
+.DS_Store
