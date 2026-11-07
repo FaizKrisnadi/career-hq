@@ -9,6 +9,7 @@ Gemini CLI, or a human) can operate it. Read this file plus
 - `app/` — vinext (Next.js API on Vite) dashboard deployed to Cloudflare
   Workers. D1 database is the source of truth. UI + `/api/engine/*` REST API.
 - `engine/` — agent-side Node scripts (no dependencies, Node >= 20):
+  - `cover-letter-engine.mjs` — **single-file cover-letter capability**: lint gate, fact-loss diff, all four LLM phase prompts, API client. Self-contained; copy anywhere.
   - `api.mjs` — API client (all commands: `node engine/api.mjs` prints usage)
   - `lint.mjs` — anti-slop gate for generated documents (exit 0 = pass)
   - `writeback.mjs` — mirrors status changes into the user's local note files
