@@ -7,7 +7,7 @@
 // Commands:
 //   lint <file.md> [--cv-facts <path>]        anti-slop gate (exit 0 = pass)
 //   factdiff <before> <after>                 fail if fact tokens were lost
-//   prompts [fit|draft|editor|reader|all]     the LLM phase prompts
+//   prompts [strategy|fit|draft|editor|reader|all]  the LLM phase prompts
 //   api get-application <id>                  career-hq read
 //   api push-document <json>                  career-hq write
 //   api push-fit <json>                       career-hq write
@@ -16,13 +16,14 @@
 //
 // The PIPELINE (what any agent does with this file):
 //   1. api get-application <id>            → posting + context
-//   2. `prompts fit`                       → evidence-disciplined fit analysis
-//   3. `prompts draft`                     → voice-true draft (≤380 words)
-//   4. lint draft.md                       → must exit 0 (revise ≤4 rounds)
-//   5. after every revision: factdiff prev.md draft.md   → must exit 0
-//   6. `prompts reader`                    → cold read; fix or remove flags
-//   7. api push-document '<json>'          → into the dashboard
-//   8. HUMAN confirms before anything is submitted anywhere. Non-negotiable.
+//   2. `prompts strategy`                  → the design logic (fear, thesis, map)
+//   3. `prompts fit`                       → evidence-disciplined fit analysis
+//   4. `prompts draft`                     → voice-true draft (≤380 words)
+//   5. lint draft.md                       → must exit 0 (revise ≤4 rounds)
+//   6. after every revision: factdiff prev.md draft.md   → must exit 0
+//   7. `prompts reader`                    → cold read; fix or remove flags
+//   8. api push-document '<json>'          → into the dashboard
+//   9. HUMAN confirms before anything is submitted anywhere. Non-negotiable.
 
 import { readFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -156,22 +157,37 @@ function factdiff(beforeText, afterText) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const PROMPTS = {
+  strategy: `COVER LETTER DESIGN LOGIC — the reasoning before the writing. Apply ALL eight rules, in order, before drafting a word.
+
+1. Find the anxiety behind the posting. Listed requirements are the surface. Ask: why does this role exist, what does the hiring manager fear getting wrong? Write ONE sentence naming that fear. (Example: a commodity-markets practice hiring early-career means "we need client-safe rigor and credible energy-transition fluency on day one.")
+2. Positioning is who the candidate is FOR THIS EMPLOYER — one sentence, not a biography. Every paragraph serves that thesis; anything impressive-but-off-thesis gets cut. Selectivity signals judgment.
+3. Map each need to the candidate's closest TRUE asset, at honest distance: Direct needs are load-bearing (cite their numbers); Adjacent needs get converted, not stretched — name the bridge yourself ("investment-flow analysis, not corporate valuation"); Gaps get rule 4. Never let Adjacent masquerade as Direct.
+4. The disclosure move — for a real gap: [honest statement] + [transferable substrate] + [specific commitment]. Example: "I have not used Power BI yet; the data work underneath is the hard part, and I am ready to build the client dashboards in it." Volunteered weakness is a credibility asset; discovered weakness is a rejection.
+5. Open on the intersection: the first paragraph is the single most concrete overlap between their anxiety and the candidate's evidence, carrying its number. Never "I am writing to apply."
+6. Every claim carries its number. "52 projects across 10 markets" beats "extensive experience" — numbers persuade, adjectives hide.
+7. Sound like the author of the CV: their rhythm, their hedges ("that is methods, not commodity experience"), plain verbs. The reader should recognize the person behind the CV.
+8. Close on proof, not eagerness: live dashboards, published work — offer to walk through evidence. Enthusiasm offers nothing.
+
+Output before drafting: the fear sentence (rule 1), the positioning sentence (rule 2), and the need→asset map with distances (rule 3).`,
   fit: `You are a fit analyst with evidence discipline. Read the candidate's CV and CV bank, plus the posting text below.
 For EVERY meaningful posting requirement, classify candidate evidence as Direct / Adjacent / Gap / Unknown, each with a source citation (file + line/section).
 Never invent experience. Absent facts are null; unverifiable caveats go to notes, never into claims.
-Output JSON: {"score": 0-10, "summary": "two-sentence positioning angle", "evidence": [{"claim","cls","source"}], "gaps": [..], "notes": "forbidden-claim boundaries, location/visa caveats"}.
+Also read BEYOND the listed requirements: infer the anxiety behind the posting — why the role exists and what the hiring manager fears getting wrong — and assess the candidate against that too.
+Output JSON: {"score": 0-10, "summary": "two-sentence positioning angle (who the candidate is FOR THIS employer)", "evidence": [{"claim","cls","source"}], "gaps": [..], "notes": "forbidden-claim boundaries, location/visa caveats"}.
 Score honestly — do not inflate. Posting: <POSTING_TEXT>`,
   draft: `You write cover letters that read like one specific human, not like AI.
+First apply the design logic: name the anxiety behind the posting (one sentence), fix the positioning thesis (who the candidate is FOR THIS employer), map needs to evidence at honest distance, then draft.
 HARD RULES — concise, factual English; natural, confident, direct, evidence-bounded; every claim traceable to the CV or CV bank; no invented facts.
 Banned: staged importance ("It is important to note"), not-X-but-Y constructions, inflation words (pivotal/transformative/groundbreaking/seamless), vague authority ("research shows" without a named source), "delve", assistant residue, filler ("in order to"), canned arcs ("In today's rapidly evolving...").
-Open on the most concrete relevant point. Use ONLY evidence the fit analysis marked Direct or Adjacent; name concrete projects and numbers. Address what the posting actually asks for. EN, max 380 words.
-If the posting mentions a tool the candidate has never used, the honest disclosure ("I have not used X yet; the underlying skill is the hard part") is a credibility asset — include it rather than glossing.
+Open on the most concrete relevant point — the intersection of their anxiety and the candidate's strongest number. Use ONLY evidence the fit analysis marked Direct or Adjacent; convert Adjacent by naming the bridge; never stretch Adjacent into Direct. Address what the posting actually asks for. EN, max 380 words.
+Gaps: use the disclosure move — [honest statement] + [transferable substrate] + [specific commitment]. Volunteered weakness ("I have not used X yet; the underlying skill is the hard part") is a credibility asset; glossing is not.
+Close on proof, not eagerness — live work the reader can open.
 Forbidden claims list at <CV_FACTS_PATH> is absolute. Write the letter to <OUT_PATH>. Return the file path.`,
   editor: `You revise a cover letter to pass the lint gate WITHOUT losing a single fact.
 Preserve every number, date, name, URL and claim verbatim; change only formulation. After each revision run: factdiff <previous> <revised> (must pass) and lint <revised> (must exit 0).
 If the gate demands something impossible, escalate plainly instead of faking a pass.`,
   reader: `You read the letter COLD, with only the candidate's source documents in hand. You have seen no earlier draft.
-Find what would embarrass the candidate: claims the CV does not support, numbers absent from every source, tone slipping into AI cadence, vagueness where a fact should be.
+Find what would embarrass the candidate: claims the CV does not support, numbers absent from every source, tone slipping into AI cadence, vagueness where a fact should be, an Adjacent claim dressed up as Direct.
 Also verify posting-dependent statements against the actual posting text if provided. Do not edit any file.
 Output: {"issues": [...], "mustFix": true|false}. Specific and evidence-cited, or nothing.`,
 };
