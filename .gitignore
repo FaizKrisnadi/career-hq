@@ -10,6 +10,7 @@ app/.deploy-secrets.local
 *.local
 
 # --- personal career data (never commit) ---
+out/
 adapters/extract/
 adapters/reconciliation-report.json
 adapters/commit-result.json
