@@ -7,11 +7,11 @@
   <p><sub><b>The cockpit tracks. The agent works. The ledger never lies.</b></sub></p>
 
   <p>
-    <img alt="runtime — cloudflare workers" src="https://img.shields.io/badge/runtime-cloudflare%20workers-f38020?style=flat-square&labelColor=10151b">
-    <img alt="store — D1 + R2" src="https://img.shields.io/badge/store-D1%20%2B%20R2-10151b?style=flat-square&labelColor=f4f6f9">
-    <img alt="paid APIs — 0" src="https://img.shields.io/badge/paid%20apis-0-1c7c52?style=flat-square&labelColor=10151b">
-    <img alt="anti-slop gate — armed" src="https://img.shields.io/badge/anti%2Dslop%20gate-armed-8a6410?style=flat-square&labelColor=10151b">
-    <img alt="license — MIT" src="https://img.shields.io/badge/license-MIT-10151b?style=flat-square&labelColor=f4f6f9">
+    <img alt="runtime — cloudflare workers" src="assets/badges/runtime.svg">
+    <img alt="store — D1 + R2" src="assets/badges/store.svg">
+    <img alt="paid APIs — 0" src="assets/badges/apis.svg">
+    <img alt="anti-slop gate — armed" src="assets/badges/gate.svg">
+    <img alt="license — MIT" src="assets/badges/license.svg">
   </p>
 </div>
 
