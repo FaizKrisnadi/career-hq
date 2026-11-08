@@ -1,0 +1,51 @@
+name: engine-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  syntax-and-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Syntax-check engine modules
+        run: |
+          fails=0
+          for f in engine/*.mjs; do
+            node --check "$f" || fails=$((fails+1))
+          done
+          echo "checked engine/*.mjs — $fails failure(s)"
+          exit $((fails > 0))
+
+      - name: Validate JSON config files
+        run: |
+          node -e '
+            const fs = require("fs");
+            const files = ["engine/lint-config.json", "engine/paths.example.json"];
+            let bad = 0;
+            for (const f of files) {
+              try {
+                JSON.parse(fs.readFileSync(f, "utf8"));
+                console.log("ok:", f);
+              } catch (e) {
+                console.error("INVALID JSON:", f, e.message);
+                bad++;
+              }
+            }
+            process.exit(bad);
+          '
+
+      - name: Guard — secrets must never be tracked
+        run: |
+          # engine/.engine-env and engine/.paths.json are gitignored; fail if anyone tracks them
+          if git ls-files --error-unmatch engine/.engine-env engine/.paths.json >/dev/null 2>&1; then
+            echo "FATAL: secret files are tracked by git"; exit 1
+          fi
+          echo "no tracked secrets"
